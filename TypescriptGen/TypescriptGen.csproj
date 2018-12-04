@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>TypescriptGen</PackageId>
+    <Authors>Kevin Donovan</Authors>
+    <Product>TypescriptGen</Product>
+    <Version>0.0.1</Version>
+    <Description>A set of helper utilities used to generate typescript files from c# types.</Description>
+  </PropertyGroup>
+
+</Project>
