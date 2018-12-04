@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace TypeGen
+namespace TypescriptGen
 {
     public class StaticDependency
     {
         /// <summary>
-        /// Use this if you want to use a default import
+        ///     Use this if you want to use a default import
         /// </summary>
         public string DefaultExport { get; set; }
 
         /// <summary>
-        /// Set this to true if you want to have import * as <see cref="DefaultExport"/> instead of import <see cref="DefaultExport"/>
+        ///     Set this to true if you want to have import * as <see cref="DefaultExport" /> instead of import
+        ///     <see cref="DefaultExport" />
         /// </summary>
         public bool UseStarAs { get; set; }
 
@@ -26,11 +27,7 @@ namespace TypeGen
                 return $"import {exportList} {from};";
 
             var defaultExport = $"{(UseStarAs ? "* as " : "")}{DefaultExport}";
-            if (Exports.Any())
-            {
-                //use both
-                return $"import {defaultExport}, {exportList} {from};";
-            }
+            if (Exports.Any()) return $"import {defaultExport}, {exportList} {from};";
 
             return $"import {defaultExport} {from};";
         }

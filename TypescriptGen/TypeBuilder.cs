@@ -3,25 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using TypeGen.FileTypes;
+using TypescriptGen.FileTypes;
 
-namespace TypeGen
+namespace TypescriptGen
 {
     public class TypeBuilder
     {
         private readonly Type[] _allTypes;
-        public TsDir RootDir { get; set; }
-        
-        public Dictionary<Type, ClassFile> ClassFiles { get; } = new Dictionary<Type, ClassFile>();
-        public Dictionary<Type, EnumFile> EnumFiles { get; } = new Dictionary<Type, EnumFile>();
-        public Dictionary<Type, InterfaceFile> InterfaceFiles { get; } = new Dictionary<Type, InterfaceFile>();
-
-        public List<UnionTypeDefinition> UnionTypeDefinitions { get; } = new List<UnionTypeDefinition>();
-
-        public static bool LineBetweenProperties { get; set; } = false;
-        public static string DefaultExtension { get; set; } = ".ts";
-        public static string TickStile { get; set; } = "'";
-        public List<Decorator> DefaultClassPropertyDecorators { get; } = new List<Decorator>();
 
         public TypeBuilder(params Assembly[] additionalAssemblies)
         {
@@ -34,7 +22,7 @@ namespace TypeGen
                 {
                     Assembly.GetExecutingAssembly(),
                     Assembly.GetCallingAssembly(),
-                    Assembly.GetEntryAssembly(),
+                    Assembly.GetEntryAssembly()
                 })
                 .Union(Assembly.GetCallingAssembly().GetReferencedAssemblies().Select(Assembly.Load))
                 .Union(Assembly.GetEntryAssembly().GetReferencedAssemblies().Select(Assembly.Load))
@@ -44,6 +32,19 @@ namespace TypeGen
 
             //todo move all .net types into definitions, to do this we need a way to indicate a type that doesn't necessarily need to be imported. That way a user could swap out all instances of a type (like DateTime) with a specific typescript/javascript type or even a type from a library import. Should also change it so that a type can have multiple associated files with it, files would associate back to a type so you could do file->type->files[]
         }
+
+        public TsDir RootDir { get; set; }
+
+        public Dictionary<Type, ClassFile> ClassFiles { get; } = new Dictionary<Type, ClassFile>();
+        public Dictionary<Type, EnumFile> EnumFiles { get; } = new Dictionary<Type, EnumFile>();
+        public Dictionary<Type, InterfaceFile> InterfaceFiles { get; } = new Dictionary<Type, InterfaceFile>();
+
+        public List<UnionTypeDefinition> UnionTypeDefinitions { get; } = new List<UnionTypeDefinition>();
+
+        public static bool LineBetweenProperties { get; set; } = false;
+        public static string DefaultExtension { get; set; } = ".ts";
+        public static string TickStile { get; set; } = "'";
+        public List<Decorator> DefaultClassPropertyDecorators { get; } = new List<Decorator>();
 
         public TypedFile Type<TType>()
         {
@@ -71,10 +72,7 @@ namespace TypeGen
 
         public void Types(params Func<Type, bool>[] filters)
         {
-            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t))))
-            {
-                Type(type);
-            }
+            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t)))) Type(type);
         }
 
         public ClassFile Class<TType>()
@@ -93,10 +91,7 @@ namespace TypeGen
 
         public void Classes(params Func<Type, bool>[] filters)
         {
-            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t))))
-            {
-                Class(type);
-            }
+            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t)))) Class(type);
         }
 
         public EnumFile Enum(Type type)
@@ -114,11 +109,12 @@ namespace TypeGen
         }
 
         /// <summary>
-        /// Adds a <see cref="InterfaceFile"/> to be used to generate an interface (classes can be used here if you want to generate a typescript interface from a c# class)
+        ///     Adds a <see cref="InterfaceFile" /> to be used to generate an interface (classes can be used here if you want to
+        ///     generate a typescript interface from a c# class)
         /// </summary>
         /// <param name="type"></param>
         /// <param name="shouldCreate"></param>
-        /// <returns>The created <see cref="InterfaceFile"/> so you can make changes like adjusting property names or values.</returns>
+        /// <returns>The created <see cref="InterfaceFile" /> so you can make changes like adjusting property names or values.</returns>
         public InterfaceFile Interface(Type type)
         {
             if (InterfaceFiles.ContainsKey(type))
@@ -129,22 +125,19 @@ namespace TypeGen
         }
 
         /// <summary>
-        /// types are checked against the passed in filters to determine if a typescript interface should be generated
+        ///     types are checked against the passed in filters to determine if a typescript interface should be generated
         /// </summary>
         /// <param name="filters"></param>
         public void Interfaces(params Func<Type, bool>[] filters)
         {
-            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t))))
-            {
-                Interface(type);
-            }
+            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t)))) Interface(type);
         }
 
         /// <summary>
-        /// Creates a Typescript type union
+        ///     Creates a Typescript type union
         /// </summary>
         /// <param name="name">The name used for the type</param>
-        /// <param name="directory">The <see cref="TsDir"/> where the resulting file should be placed.</param>
+        /// <param name="directory">The <see cref="TsDir" /> where the resulting file should be placed.</param>
         /// <param name="filters">The filters used to find the types used in the union.</param>
         /// <returns></returns>
         public UnionTypeDefinition UnionType(string name, TsDir directory = null, params Func<Type, bool>[] filters)

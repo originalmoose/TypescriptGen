@@ -1,9 +1,15 @@
 ﻿using System.IO;
 
-namespace TypeGen.FileTypes
+namespace TypescriptGen.FileTypes
 {
     public abstract class TsFile
     {
+        protected TsFile(string fileName, TsDir directory)
+        {
+            FileName = fileName;
+            Directory = directory;
+        }
+
         public TsDir Directory { get; set; }
 
         public string FileName { get; set; }
@@ -12,14 +18,11 @@ namespace TypeGen.FileTypes
 
         public string Export { get; set; }
 
-        public string Import(TsDir targetDir) => $"import {{ {Export} }} from {TypeBuilder.TickStile}{targetDir.ImportPath(Directory, FileName)}{TypeBuilder.TickStile};";
-
         public string FilePath => Path.Combine(Directory.ToPath(), $"{FileName}{FileExtension}");
 
-        protected TsFile(string fileName, TsDir directory)
+        public string Import(TsDir targetDir)
         {
-            FileName = fileName;
-            Directory = directory;
+            return $"import {{ {Export} }} from {TypeBuilder.TickStile}{targetDir.ImportPath(Directory, FileName)}{TypeBuilder.TickStile};";
         }
     }
 }

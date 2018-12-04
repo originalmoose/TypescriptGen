@@ -1,6 +1,6 @@
-﻿using TypeGen.FileTypes;
+﻿using TypescriptGen.FileTypes;
 
-namespace TypeGen
+namespace TypescriptGen
 {
     public class Decorator
     {
@@ -10,8 +10,14 @@ namespace TypeGen
 
         public StaticDependency StaticDependency { get; set; }
 
-        public override string ToString() => Output.StartsWith("@") ? Output : $"@{Output}";
+        public override string ToString()
+        {
+            return Output.StartsWith("@") ? Output : $"@{Output}";
+        }
 
-        public static implicit operator string(Decorator decorator) => decorator.ToString();
+        public static implicit operator string(Decorator decorator)
+        {
+            return decorator.ToString();
+        }
     }
 }

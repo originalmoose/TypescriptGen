@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Reflection;
 
-namespace TypeGen.FileTypes.Properties
+namespace TypescriptGen.FileTypes.Properties
 {
     public class TypedFieldProperty : ClassProperty
     {
-        
-        public FieldInfo FieldInfo { get; }
-
         public TypedFieldProperty(TypeBuilder builder, FieldInfo fieldInfo)
         {
             FieldInfo = fieldInfo;
@@ -41,10 +38,9 @@ namespace TypeGen.FileTypes.Properties
                 return;
             }
 
-            if (isExternalType)
-            {
-                Dependencies.Add(builder.Type(fieldInfo.FieldType));
-            }
+            if (isExternalType) Dependencies.Add(builder.Type(fieldInfo.FieldType));
         }
+
+        public FieldInfo FieldInfo { get; }
     }
 }

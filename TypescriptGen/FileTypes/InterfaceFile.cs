@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TypeGen.FileTypes.Properties;
-using TypeGen.Helpers;
+using TypescriptGen.FileTypes.Properties;
+using TypescriptGen.Helpers;
 
-namespace TypeGen.FileTypes
+namespace TypescriptGen.FileTypes
 {
     public class InterfaceFile : TypedFile
     {
-        public List<Property> Properties { get; } = new List<Property>();
-
         public InterfaceFile(TypeBuilder builder, Type type, TsDir rootDir) : base(type, rootDir)
         {
             Properties.AddRange(type.GetProperties().PropertyFilter()
                 .Select(prop => new TypedInterfaceProperty(builder, prop)));
         }
+
+        public List<Property> Properties { get; } = new List<Property>();
 
         public override string ToString()
         {
@@ -41,6 +41,9 @@ namespace TypeGen.FileTypes
             return builder;
         }
 
-        public static implicit operator string(InterfaceFile file) => file.ToString();
+        public static implicit operator string(InterfaceFile file)
+        {
+            return file.ToString();
+        }
     }
 }

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TypeGen.Helpers;
-using TypeGen.Interfaces;
+using TypescriptGen.Helpers;
+using TypescriptGen.Interfaces;
 
-namespace TypeGen.FileTypes
+namespace TypescriptGen.FileTypes
 {
     public abstract class TypedFile : TsFile
     {
         public readonly List<TsFile> Dependencies = new List<TsFile>();
         public readonly List<StaticDependency> StaticDependencies = new List<StaticDependency>();
-
-        public Type Type { get; }
 
         protected TypedFile(Type type, TsDir rootDir) : base(type.Name,
             type.Namespace == null ? rootDir : type.Namespace.Split('.').Aggregate(rootDir, (current, namespacePart) => current.Down(namespacePart)))
@@ -19,6 +17,8 @@ namespace TypeGen.FileTypes
             Type = type;
             Export = type.Name;
         }
+
+        public Type Type { get; }
 
 
         protected void WriteDependencies(IndentedStringBuilder builder, IEnumerable<IHasDependencies> properties)
@@ -32,12 +32,12 @@ namespace TypeGen.FileTypes
                 if (fromAll == null)
                 {
                     //haven't seen this dependency
-                    var x = (new StaticDependency
+                    var x = new StaticDependency
                     {
                         DefaultExport = staticDependency.DefaultExport,
                         ImportPath = staticDependency.ImportPath,
-                        UseStarAs = staticDependency.UseStarAs,
-                    });
+                        UseStarAs = staticDependency.UseStarAs
+                    };
                     x.Exports.AddRange(staticDependency.Exports);
                     allStaticDependencies.Add(x);
                     continue;
@@ -52,29 +52,20 @@ namespace TypeGen.FileTypes
                 else
                 {
                     if (!string.IsNullOrEmpty(staticDependency.DefaultExport))
-                    {
-                        //we have a static dependency that is the same but with a different default export name so it is valid to import
                         allStaticDependencies.Add(new StaticDependency
                         {
                             DefaultExport = staticDependency.DefaultExport,
                             UseStarAs = staticDependency.UseStarAs,
-                            ImportPath = staticDependency.ImportPath,
+                            ImportPath = staticDependency.ImportPath
                         });
-                    }
                 }
 
                 fromAll.Exports.AddRange(staticDependency.Exports.Where(e => fromAll.Exports.Contains(e)));
             }
 
-            foreach (var staticDependency in allStaticDependencies)
-            {
-                builder.AppendLine(staticDependency);
-            }
+            foreach (var staticDependency in allStaticDependencies) builder.AppendLine(staticDependency);
 
-            foreach (var fileDependency in Dependencies.Union(hasDependencies.SelectMany(x => x.Dependencies)))
-            {
-                builder.AppendLine(fileDependency.Import(Directory));
-            }
+            foreach (var fileDependency in Dependencies.Union(hasDependencies.SelectMany(x => x.Dependencies))) builder.AppendLine(fileDependency.Import(Directory));
 
             if (Dependencies.Any() || hasDependencies.Any())
                 builder.AppendLine();

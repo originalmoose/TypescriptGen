@@ -20,8 +20,8 @@ namespace System.Reflection
 
         public static IEnumerable<PropertyInfo> PropertyFilter(this IEnumerable<PropertyInfo> propertyInfos)
         {
-            return propertyInfos.Where(x => 
-                !x.PropertyType.IsGenericType || 
+            return propertyInfos.Where(x =>
+                !x.PropertyType.IsGenericType ||
                 x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() != typeof(IObservable<>));
         }
     }

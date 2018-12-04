@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TypeGen.FileTypes;
+using TypescriptGen.FileTypes;
 
-namespace TypeGen.Interfaces
+namespace TypescriptGen.Interfaces
 {
     public interface IHasDependencies
     {

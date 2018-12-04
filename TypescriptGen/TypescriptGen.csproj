@@ -7,6 +7,11 @@
     <Product>TypescriptGen</Product>
     <Version>0.0.1</Version>
     <Description>A set of helper utilities used to generate typescript files from c# types.</Description>
+    <Copyright></Copyright>
+    <PackageLicenseUrl>https://github.com/originalmoose/TypescriptGen/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/originalmoose/TypescriptGen</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/originalmoose/TypescriptGen</RepositoryUrl>
+    <PackageTags>typescript</PackageTags>
   </PropertyGroup>
 
 </Project>

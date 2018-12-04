@@ -1,9 +1,37 @@
 using Xunit;
 
-namespace TypeGen.Test
+namespace TypescriptGen.Test
 {
     public class StaticDependencyTests
     {
+        [Fact]
+        public void DefaultImport()
+        {
+            var test = new StaticDependency
+            {
+                ImportPath = "mobx",
+                DefaultExport = "Mobx"
+            };
+
+            Assert.Equal("import Mobx from 'mobx';", test.ToString());
+        }
+
+        [Fact]
+        public void DualImport_Default()
+        {
+            var test = new StaticDependency
+            {
+                ImportPath = "react",
+                DefaultExport = "React",
+                Exports =
+                {
+                    "Component"
+                }
+            };
+
+            Assert.Equal("import React, { Component } from 'react';", test.ToString());
+        }
+
         [Fact]
         public void SingleImport()
         {
@@ -12,10 +40,23 @@ namespace TypeGen.Test
                 ImportPath = "mobx",
                 Exports =
                 {
-                    "observable",
-                },
+                    "observable"
+                }
             };
             Assert.Equal("import { observable } from 'mobx';", test.ToString());
+        }
+
+        [Fact]
+        public void StarAsImport()
+        {
+            var test = new StaticDependency
+            {
+                ImportPath = "mobx",
+                DefaultExport = "Mobx",
+                UseStarAs = true
+            };
+
+            Assert.Equal("import * as Mobx from 'mobx';", test.ToString());
         }
 
         [Fact]
@@ -27,53 +68,11 @@ namespace TypeGen.Test
                 Exports =
                 {
                     "observable",
-                    "decorate",
-                },
+                    "decorate"
+                }
             };
 
             Assert.Equal("import { observable, decorate } from 'mobx';", test.ToString());
-        }
-
-        [Fact]
-        public void DefaultImport()
-        {
-            var test = new StaticDependency
-            {
-                ImportPath = "mobx", 
-                DefaultExport = "Mobx",
-            };
-
-            Assert.Equal("import Mobx from 'mobx';", test.ToString());
-        }
-
-        [Fact]
-        public void StarAsImport()
-        {
-            var test = new StaticDependency
-            {
-                ImportPath = "mobx", 
-                DefaultExport = "Mobx",
-                UseStarAs = true,
-            };
-
-            Assert.Equal("import * as Mobx from 'mobx';", test.ToString());
-        }
-
-        [Fact]
-        public void DualImport_Default()
-        {
-            var test = new StaticDependency
-            {
-                ImportPath = "react", 
-                DefaultExport = "React",
-                Exports =
-                {
-                    "Component",
-                },
-            };
-
-            Assert.Equal("import React, { Component } from 'react';", test.ToString());
-            
         }
     }
 }

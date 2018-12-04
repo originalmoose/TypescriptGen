@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace TypeGen
+namespace TypescriptGen
 {
     public sealed class ActionDisposable : IDisposable
     {

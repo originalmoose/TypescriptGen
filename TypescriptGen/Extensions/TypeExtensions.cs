@@ -13,10 +13,7 @@ namespace System
             {
                 var isArray = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
 
-                if (isArray)
-                {
-                    return $"Array<{type.GenericTypeArguments[0].TsType()}>";
-                }
+                if (isArray) return $"Array<{type.GenericTypeArguments[0].TsType()}>";
 
                 return type.TsTypeInternal();
             }
@@ -63,6 +60,8 @@ namespace System
                 case "System.Object":
                 case "dynamic":
                     t = "any";
+                    break;
+                default:
                     break;
             }
 

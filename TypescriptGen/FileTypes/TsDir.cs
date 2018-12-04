@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TypeGen.FileTypes
+namespace TypescriptGen.FileTypes
 {
     public class TsDir
     {
+        private readonly List<TsDir> _children = new List<TsDir>();
         public string DirName { get; set; }
 
         public TsDir ParentDir { get; set; }
-
-        private readonly List<TsDir> _children = new List<TsDir>();
         public TsDir[] Children => _children.ToArray();
 
         public TsDir Up()
@@ -67,15 +66,9 @@ namespace TypeGen.FileTypes
 
         public string ImportPath(TsDir targetDir, string targetFile)
         {
-            if (this == targetDir)
-            {
-                return $"./{targetFile}";
-            }
+            if (this == targetDir) return $"./{targetFile}";
 
-            if (ParentDir == targetDir)
-            {
-                return $"../{targetFile}";
-            }
+            if (ParentDir == targetDir) return $"../{targetFile}";
 
             //need to switch to a non recursive solution?
             TsDir ChildPath(TsDir start)
@@ -100,10 +93,7 @@ namespace TypeGen.FileTypes
             var s = this;
             var childTest = ChildPath(s);
 
-            if (childTest != null)
-            {
-                result.Add(".");
-            }
+            if (childTest != null) result.Add(".");
 
             while (childTest == null && s != null)
             {

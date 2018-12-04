@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TypeGen
+namespace TypescriptGen
 {
     public static class Disposable
     {

@@ -1,11 +1,9 @@
 ﻿using System.Reflection;
 
-namespace TypeGen.FileTypes.Properties
+namespace TypescriptGen.FileTypes.Properties
 {
     public class TypedClassProperty : ClassProperty
     {
-        public PropertyInfo PropertyInfo { get; }
-
         public TypedClassProperty(TypeBuilder builder, PropertyInfo propertyInfo)
         {
             PropertyInfo = propertyInfo;
@@ -39,10 +37,9 @@ namespace TypeGen.FileTypes.Properties
                 return;
             }
 
-            if (isExternalType)
-            {
-                Dependencies.Add(builder.Type(propertyInfo.PropertyType));
-            }
+            if (isExternalType) Dependencies.Add(builder.Type(propertyInfo.PropertyType));
         }
+
+        public PropertyInfo PropertyInfo { get; }
     }
 }

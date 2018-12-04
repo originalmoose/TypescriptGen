@@ -2,18 +2,18 @@
 using System.Linq;
 using System.Text;
 
-namespace TypeGen.Helpers
+namespace TypescriptGen.Helpers
 {
     public class IndentedStringBuilder
     {
-        public int TabCount { get; private set; } = 0;
+        private readonly StringBuilder _builder;
 
         public IndentedStringBuilder()
         {
             _builder = new StringBuilder("");
         }
 
-        private readonly StringBuilder _builder;
+        public int TabCount { get; private set; }
 
         public IndentedStringBuilder AppendLine()
         {

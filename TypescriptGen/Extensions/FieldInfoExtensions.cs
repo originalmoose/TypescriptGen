@@ -10,10 +10,11 @@ namespace System.Reflection
         {
             return propertyInfo.FieldType.TsType();
         }
+
         public static IEnumerable<FieldInfo> FieldFilter(this IEnumerable<FieldInfo> propertyInfos)
         {
-            return propertyInfos.Where(x => 
-                !x.FieldType.IsGenericType || 
+            return propertyInfos.Where(x =>
+                !x.FieldType.IsGenericType ||
                 x.FieldType.IsGenericType && x.FieldType.GetGenericTypeDefinition() != typeof(IObservable<>));
         }
 

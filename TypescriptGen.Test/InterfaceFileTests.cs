@@ -1,7 +1,7 @@
-﻿using TypeGen.Test.TestClasses.Models;
+﻿using TypescriptGen.Test.TestClasses.Models;
 using Xunit;
 
-namespace TypeGen.Test
+namespace TypescriptGen.Test
 {
     public class InterfaceFileTests
     {

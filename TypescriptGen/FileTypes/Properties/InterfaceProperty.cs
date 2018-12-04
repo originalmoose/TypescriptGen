@@ -1,4 +1,4 @@
-﻿namespace TypeGen.FileTypes.Properties
+﻿namespace TypescriptGen.FileTypes.Properties
 {
     public class InterfaceProperty : Property
     {

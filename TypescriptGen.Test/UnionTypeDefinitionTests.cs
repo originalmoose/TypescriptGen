@@ -1,16 +1,12 @@
 using System.Linq;
-using TypeGen.FileTypes;
-using TypeGen.Test.TestClasses.Models;
+using TypescriptGen.FileTypes;
+using TypescriptGen.Test.TestClasses.Models;
 using Xunit;
 
-namespace TypeGen.Test
+namespace TypescriptGen.Test
 {
     public class UnionTypeDefinitionTests
     {
-        public UnionTypeDefinitionTests()
-        {
-        }
-
         [Fact]
         public void UnionTypeDefinition_generic_UnionType_creates_union_on_base_class()
         {
@@ -24,15 +20,12 @@ namespace TypeGen.Test
                 typeof(TestSimpleClass_B),
                 typeof(TestSimpleClass_C),
                 typeof(TestSimpleClass_D),
-                typeof(TestSimpleClass_E),
+                typeof(TestSimpleClass_E)
             };
 
             var actual = builder.UnionTypeDefinitions.SelectMany(x => x.TypesForUnion).Select(x => x.Type).ToArray();
 
-            foreach (var e in expected)
-            {
-                Assert.Contains(e, actual);
-            }
+            foreach (var e in expected) Assert.Contains(e, actual);
         }
 
         [Fact]
@@ -41,10 +34,7 @@ namespace TypeGen.Test
             var builder = new TypeBuilder();
             builder.UnionType<TestSimpleBaseClass>();
 
-            foreach (var u in builder.UnionTypeDefinitions)
-            {
-                Assert.All(u.TypesForUnion, d => { Assert.IsType<ClassFile>(d); });
-            }
+            foreach (var u in builder.UnionTypeDefinitions) Assert.All(u.TypesForUnion, d => { Assert.IsType<ClassFile>(d); });
         }
 
         [Fact]
@@ -60,12 +50,9 @@ namespace TypeGen.Test
             builder.UnionType<TestSimpleBaseClass>();
             //def.UseInterfaces = true;
 
-            foreach (var u in builder.UnionTypeDefinitions)
-            {
-                Assert.All(u.TypesForUnion, d => { Assert.IsType<InterfaceFile>(d); });
-            }
+            foreach (var u in builder.UnionTypeDefinitions) Assert.All(u.TypesForUnion, d => { Assert.IsType<InterfaceFile>(d); });
         }
-        
+
         [Fact]
         public void UnionTypeDefinition_UseInterfaces_true_results_in_InterfaceDefinitions_getting_generated_override_single_type()
         {
@@ -77,15 +64,13 @@ namespace TypeGen.Test
             builder.Interface<TestSimpleClass_D>();
             builder.Interface<TestSimpleClass_E>();
             builder.UnionType<TestSimpleBaseClass>();
-            
+
             Assert.Single(builder.UnionTypeDefinitions);
             foreach (var definition in builder.UnionTypeDefinitions[0].TypesForUnion)
-            {
                 if (definition.Type == typeof(TestSimpleClass))
                     Assert.IsType<ClassFile>(definition);
                 else
                     Assert.IsType<InterfaceFile>(definition);
-            }
         }
 
         [Fact]

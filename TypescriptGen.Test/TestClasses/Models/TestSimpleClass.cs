@@ -1,6 +1,6 @@
 using System;
 
-namespace TypeGen.Test.TestClasses.Models
+namespace TypescriptGen.Test.TestClasses.Models
 {
     public abstract class TestSimpleBaseClass
     {

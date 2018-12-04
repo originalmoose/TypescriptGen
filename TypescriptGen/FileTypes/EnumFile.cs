@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TypeGen.FileTypes.Properties;
-using TypeGen.Helpers;
+using TypescriptGen.FileTypes.Properties;
+using TypescriptGen.Helpers;
 
-namespace TypeGen.FileTypes
+namespace TypescriptGen.FileTypes
 {
     public class EnumFile : TypedFile
     {
-        public List<EnumProperty> Properties { get; } = new List<EnumProperty>();
-
         public EnumFile(Type type, TsDir rootDir) : base(type, rootDir)
         {
             Properties.AddRange(Enum.GetNames(type).Select(name =>
@@ -22,6 +20,8 @@ namespace TypeGen.FileTypes
             }));
         }
 
+        public List<EnumProperty> Properties { get; } = new List<EnumProperty>();
+
         public override string ToString()
         {
             var builder = new IndentedStringBuilder();
@@ -30,16 +30,19 @@ namespace TypeGen.FileTypes
             builder.AppendLine("{");
 
             using (builder.Indent())
+            {
                 foreach (var enumProperty in Properties)
-                {
                     builder.AppendLine(enumProperty);
-                }
+            }
 
             builder.AppendLine("}");
 
             return builder;
         }
 
-        public static implicit operator string(EnumFile file) => file.ToString();
+        public static implicit operator string(EnumFile file)
+        {
+            return file.ToString();
+        }
     }
 }
