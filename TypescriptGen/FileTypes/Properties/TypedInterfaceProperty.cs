@@ -1,17 +1,18 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace TypescriptGen.FileTypes.Properties
 {
     public class TypedInterfaceProperty : InterfaceProperty
     {
-        public TypedInterfaceProperty(TypeBuilder builder, PropertyInfo propertyInfo) : base(propertyInfo.Name, propertyInfo.TsType())
+        public TypedInterfaceProperty(TypeBuilder builder, PropertyInfo propertyInfo, bool forceInterfaceForProperties = false) : base(propertyInfo.Name, propertyInfo.TsType())
         {
             PropertyInfo = propertyInfo;
 
             var isExternalType = false;
             var useTicks = false;
 
-            switch (Type)
+            switch (Type.Replace("Array<", "").Replace(">", "").Replace(" | null", "").Replace("[]", ""))
             {
                 case "string":
                     useTicks = true;
@@ -34,7 +35,22 @@ namespace TypescriptGen.FileTypes.Properties
                 return;
             }
 
-            if (isExternalType) Dependencies.Add(builder.Type(propertyInfo.PropertyType));
+            if (isExternalType)
+            {
+                var t = (forceInterfaceForProperties && !propertyInfo.PropertyType.UnderlyingType().IsEnum ? builder.Interface(propertyInfo.PropertyType) : builder.Type(propertyInfo.PropertyType));
+
+                if(t is InterfaceFile interfaceFile)
+                {
+                    //check the typename against the export
+                    if(Type.Replace("Array<", "").Replace(">", "").Replace(" | null", "").Replace("[]", "") != interfaceFile.Export)
+                    {
+                        Type = Type.Replace(Type.Replace("Array<", "").Replace(">", "").Replace(" | null", "").Replace("[]", ""), interfaceFile.Export);
+                    }
+                }
+
+                Dependencies.Add(t);
+
+            }
         }
 
         public PropertyInfo PropertyInfo { get; }

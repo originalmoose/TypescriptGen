@@ -33,8 +33,7 @@ namespace TypescriptGen.FileTypes
 
             WriteDependencies(builder, Properties);
 
-            builder.AppendLine($"export class {Export}");
-            builder.AppendLine("{");
+            builder.AppendLine($"export class {Export} {{");
 
             using (builder.Indent())
             {

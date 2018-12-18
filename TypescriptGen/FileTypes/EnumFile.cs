@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TypescriptGen.FileTypes.Properties;
 using TypescriptGen.Helpers;
 
@@ -12,10 +13,21 @@ namespace TypescriptGen.FileTypes
         {
             Properties.AddRange(Enum.GetNames(type).Select(name =>
             {
+                var stringValue = "";
+                var val =  (Enum.Parse(type, name));
+                var t = val.GetType().GetEnumUnderlyingType();
+                if(t.FullName == typeof(int).FullName)
+                    stringValue = ((int)val).ToString();
+                else if(t.FullName == typeof(byte).FullName)
+                    stringValue = ((byte)val).ToString();
+                else
+                {
+                    Console.WriteLine("Unknown enum underlying type");
+                }
                 return new EnumProperty
                 {
                     Name = name,
-                    Value = ((int) Enum.Parse(type, name)).ToString()
+                    Value = stringValue,
                 };
             }));
         }
@@ -26,8 +38,7 @@ namespace TypescriptGen.FileTypes
         {
             var builder = new IndentedStringBuilder();
 
-            builder.AppendLine($"export enum {Export}");
-            builder.AppendLine("{");
+            builder.AppendLine($"export enum {Export} {{");
 
             using (builder.Indent())
             {

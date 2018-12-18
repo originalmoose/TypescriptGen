@@ -53,21 +53,12 @@ namespace TypescriptGen
 
         public TypedFile Type(Type type)
         {
-            while (true)
-            {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                {
-                    type = type.GenericTypeArguments[0];
-                    continue;
-                }
+            var t = type.UnderlyingType();
+            if (t.IsEnum) return Enum(t);
 
-                if (type.IsEnum) return Enum(type);
+            if (t.IsInterface || InterfaceFiles.ContainsKey(t)) return Interface(t);
 
-                if (type.IsInterface || InterfaceFiles.ContainsKey(type)) return Interface(type);
-
-                return Class(type);
-                break;
-            }
+            return Class(t);
         }
 
         public void Types(params Func<Type, bool>[] filters)
@@ -83,10 +74,11 @@ namespace TypescriptGen
 
         public ClassFile Class(Type type)
         {
-            if (!ClassFiles.ContainsKey(type))
-                ClassFiles[type] = new ClassFile(this, type, RootDir);
+            var t = type.UnderlyingType();
+            if (!ClassFiles.ContainsKey(t))
+                ClassFiles[t] = new ClassFile(this, t, RootDir);
 
-            return ClassFiles[type];
+            return ClassFiles[t];
         }
 
         public void Classes(params Func<Type, bool>[] filters)
@@ -96,16 +88,17 @@ namespace TypescriptGen
 
         public EnumFile Enum(Type type)
         {
-            if (!EnumFiles.ContainsKey(type))
-                EnumFiles[type] = new EnumFile(type, RootDir);
+            var t = type.UnderlyingType();
+            if (!EnumFiles.ContainsKey(t))
+                EnumFiles[t] = new EnumFile(t, RootDir);
 
-            return EnumFiles[type];
+            return EnumFiles[t];
         }
 
-        public InterfaceFile Interface<TType>()
+        public InterfaceFile Interface<TType>(bool forceInterfaceForProperties = false)
         {
             var type = typeof(TType);
-            return Interface(type);
+            return Interface(type, forceInterfaceForProperties);
         }
 
         /// <summary>
@@ -113,24 +106,25 @@ namespace TypescriptGen
         ///     generate a typescript interface from a c# class)
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="shouldCreate"></param>
+        /// <param name="forceInterfaceForProperties"></param>
         /// <returns>The created <see cref="InterfaceFile" /> so you can make changes like adjusting property names or values.</returns>
-        public InterfaceFile Interface(Type type)
+        public InterfaceFile Interface(Type type, bool forceInterfaceForProperties = false)
         {
-            if (InterfaceFiles.ContainsKey(type))
-                return InterfaceFiles[type];
-            InterfaceFiles[type] = new InterfaceFile(this, type, RootDir);
+            var t = type.UnderlyingType();
+            if (InterfaceFiles.ContainsKey(t))
+                return InterfaceFiles[t];
+            InterfaceFiles[t] = new InterfaceFile(this, t, RootDir, forceInterfaceForProperties);
 
-            return InterfaceFiles[type];
+            return InterfaceFiles[t];
         }
 
         /// <summary>
         ///     types are checked against the passed in filters to determine if a typescript interface should be generated
         /// </summary>
         /// <param name="filters"></param>
-        public void Interfaces(params Func<Type, bool>[] filters)
+        public void Interfaces(bool forceInterfaceForProperties = false, params Func<Type, bool>[] filters)
         {
-            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t)))) Interface(type);
+            foreach (var type in _allTypes.Where(t => filters.Any(f => f(t)))) Interface(type, forceInterfaceForProperties);
         }
 
         /// <summary>
@@ -173,8 +167,14 @@ namespace TypescriptGen
             return unionTypeDefinition;
         }
 
-        public void WriteAllFiles()
+        public void WriteAllFiles(bool deleteRootFirst = false)
         {
+            if (deleteRootFirst)
+            {
+                if (Directory.Exists(RootDir.ToPath()))
+                    Directory.Delete(RootDir.ToPath(), true);
+            }
+
             foreach (var cd in ClassFiles.Values)
             {
                 if (!Directory.Exists(cd.Directory.ToPath()))

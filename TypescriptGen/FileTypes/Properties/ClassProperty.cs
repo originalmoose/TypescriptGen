@@ -6,6 +6,7 @@ namespace TypescriptGen.FileTypes.Properties
     public class ClassProperty : Property
     {
         public List<Decorator> Decorators { get; } = new List<Decorator>();
+        public string Initializer {get;set;}
 
         public override string ToString()
         {
@@ -13,7 +14,13 @@ namespace TypescriptGen.FileTypes.Properties
 
             foreach (var decorator in Decorators) builder.AppendLine(decorator);
 
-            builder.Append($"{Name}{(IsOptional ? "?" : "")}: {Type};");
+            var initializer = "";
+            if(!string.IsNullOrEmpty(Initializer))
+            {
+                initializer = Initializer.Trim().StartsWith("=") ? Initializer : $" = {Initializer}";
+            }
+
+            builder.Append($"{Name}{(IsOptional ? "?" : "")}: {Type}{initializer};");
 
             return builder.ToString();
         }

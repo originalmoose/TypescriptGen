@@ -13,7 +13,7 @@ namespace TypescriptGen.FileTypes.Properties
             var isExternalType = false;
             var useTicks = false;
 
-            switch (Type.Replace("Array<", "").Replace(">", "").Replace(" | null", ""))
+            switch (Type.Replace("Array<", "").Replace(">", "").Replace(" | null", "").Replace("[]", ""))
             {
                 case "string":
                     useTicks = true;

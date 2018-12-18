@@ -22,7 +22,7 @@ namespace TypescriptGen.FileTypes
 
         public string Import(TsDir targetDir)
         {
-            return $"import {{ {Export} }} from {TypeBuilder.TickStile}{targetDir.ImportPath(Directory, FileName)}{TypeBuilder.TickStile};";
+            return $"import {{ {Export.Replace("[]","")} }} from {TypeBuilder.TickStile}{targetDir.ImportPath(Directory, FileName)}{TypeBuilder.TickStile};";
         }
     }
 }

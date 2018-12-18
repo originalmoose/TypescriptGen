@@ -5,7 +5,7 @@
     <PackageId>TypescriptGen</PackageId>
     <Authors>Kevin Donovan</Authors>
     <Product>TypescriptGen</Product>
-    <Version>0.0.1</Version>
+    <Version>0.0.5</Version>
     <Description>A set of helper utilities used to generate typescript files from c# types.</Description>
     <Copyright></Copyright>
     <PackageLicenseUrl>https://github.com/originalmoose/TypescriptGen/blob/master/LICENSE</PackageLicenseUrl>
