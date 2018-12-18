@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Reflection;
 
@@ -79,7 +80,7 @@ namespace System
         public static Type UnderlyingType(this Type type)
         {
             var t = type;
-            while (t.IsArray || (t.IsGenericType && (t.GetGenericTypeDefinition() == typeof(IEnumerable<>) || t.GetGenericTypeDefinition() == typeof(IList<>))))
+            while (t.IsArray || t.IsGenericType && (t.GetGenericTypeDefinition() == typeof(IEnumerable<>) || t.GetGenericTypeDefinition() == typeof(IList<>) || t.GetGenericTypeDefinition() == typeof(Nullable<>)))
             {
                 if (t.IsArray)
                 {
@@ -87,7 +88,7 @@ namespace System
                     continue;
                 }
 
-                if (t.IsGenericType && (t.GetGenericTypeDefinition() == typeof(IEnumerable<>) || t.GetGenericTypeDefinition() == typeof(IList<>)))
+                if (t.IsGenericType && (t.GetGenericTypeDefinition() == typeof(IEnumerable<>) || t.GetGenericTypeDefinition() == typeof(IList<>) || t.GetGenericTypeDefinition() == typeof(Nullable<>)))
                 {
                     t = type.GenericTypeArguments[0];
                     continue;

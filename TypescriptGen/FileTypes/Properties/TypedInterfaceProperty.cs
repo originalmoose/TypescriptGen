@@ -37,7 +37,7 @@ namespace TypescriptGen.FileTypes.Properties
 
             if (isExternalType)
             {
-                var t = (forceInterfaceForProperties && !propertyInfo.PropertyType.UnderlyingType().IsEnum ? builder.Interface(propertyInfo.PropertyType) : builder.Type(propertyInfo.PropertyType));
+                var t = (forceInterfaceForProperties && !propertyInfo.PropertyType.UnderlyingType().IsEnum ? builder.Interface(propertyInfo.PropertyType, true) : builder.Type(propertyInfo.PropertyType));
 
                 if(t is InterfaceFile interfaceFile)
                 {
